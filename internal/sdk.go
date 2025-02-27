@@ -1,5 +1,5 @@
 /*
- *    Copyright 2024 Han Li and contributors
+ *    Copyright 2025 Han Li and contributors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -62,6 +62,21 @@ func (d *SdkEnvs) ToEnvs() *env.Envs {
 	}
 
 	return envs
+}
+
+func (d *SdkEnvs) ToExportEnvs() env.Vars {
+	envKeys := d.ToEnvs()
+
+	exportEnvs := make(env.Vars)
+	for k, v := range envKeys.Variables {
+		exportEnvs[k] = v
+	}
+
+	osPaths := env.NewPaths(env.OsPaths)
+	pathsStr := envKeys.Paths.Merge(osPaths).String()
+	exportEnvs["PATH"] = &pathsStr
+
+	return exportEnvs
 }
 
 type Sdk struct {
